@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  read-opc-ua-1200:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: read-opc-ua-1200
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
