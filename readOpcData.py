@@ -1,5 +1,17 @@
 import json
+import requests
 from opcua import Client
+
+def send_data_to_container(container_url, json_data):
+    try:
+        # Send a POST request with the JSON data
+        response = requests.post(container_url, json=json_data)
+        print("Response from Container B:", response.text)
+    except requests.ConnectionError:
+        print("Error: Connection to Container B failed. Container B may not be running or the URL may be incorrect.")
+    except Exception as e:
+        print("Error sending data to Container B:", e)
+
 
 def browse_opc_nodes(config_data):
     def browse_node_recursive(node, result, level=0):
@@ -28,6 +40,7 @@ def browse_opc_nodes(config_data):
 
     # Connect to the OPC UA server
     client = Client(config_data[0]["EndpointUrl"])
+
     try:
         client.connect()
         print(f"Connected to {config_data[0]['EndpointUrl']} successfully!")
@@ -36,6 +49,7 @@ def browse_opc_nodes(config_data):
             try:
                 # Loop through each server configuration
                 for server_config in config_data:
+                    container_url = server_config["ContainerURL"]
                     # Iterate over the nodes in the server configuration and browse their variables
                     for opc_node in server_config["OpcNodes"]:
                         node_id = opc_node["Id"]
@@ -48,6 +62,7 @@ def browse_opc_nodes(config_data):
                             # Convert result to JSON and print
                             result_json = json.dumps(result, indent=4)
                             print(result_json)
+                            send_data_to_container(container_url, result_json)
 
             except KeyboardInterrupt:
                 print("Script interrupted by user. Exiting...")
