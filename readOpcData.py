@@ -49,7 +49,7 @@ def browse_opc_nodes(config_data):
             try:
                 # Loop through each server configuration
                 for server_config in config_data:
-                    container_url = server_config["ContainerURL"]
+                    container_url = server_config["ContainerUrl"]
                     # Iterate over the nodes in the server configuration and browse their variables
                     for opc_node in server_config["OpcNodes"]:
                         node_id = opc_node["Id"]
