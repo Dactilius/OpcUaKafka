@@ -1,11 +1,21 @@
 version: '3'
 
 services:
-  read-opc-ua-1200:
+  flask-app:
     build:
-      context: .
+      context: ./kafkaProducer
       dockerfile: Dockerfile
-    container_name: read-opc-ua-1200
+    container_name: kafkaProducer
+    ports:
+      - "5000:5000"  # Map container's port 5000 to host's port 5000
+    networks:
+      - my-network
+
+  opcua-reader:
+    build:
+      context: ./readOpcData
+      dockerfile: Dockerfile
+    container_name: readOpcData
     networks:
       - my-network
 
